@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.7.11'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'org.springframework.boot' version '2.7.11'  // 굉장히 중요한 플러그인이다.
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE' // 버전들의 호환이 잘맞는것을 관리하는게 io.spring.dependency-management이다.
 }
 
 group = 'com.example'
@@ -13,8 +13,9 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc' //이 라이브러리가 동작하려면 다른 라이브러리가 필요하다.
 	runtimeOnly 'com.mysql:mysql-connector-j'
+	// 위에 설정 두개를 보고 스프링 부트는 데이터베이스를 사용하려나보다 --> 근데 왜 데이터베이스 설정이 안돼있지? 하고 실행을 실패하는거다.
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
