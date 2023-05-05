@@ -1,5 +1,7 @@
-package com.example.demo;
+package com.example.demo; // 실행할때 DemoApplication이 속해있는 패키지 이하로만 찾는다
 
+import com.example.demo.domain.Role;
+import com.example.demo.repository.RoleDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,7 +14,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-// @Componenent 어노테이션이 붙어있는 객체는 스프링 컨테이너가 관리하는 객체가 된다. -> Bean
+// @Component 어노테이션이 붙어있는 객체는 스프링 컨테이너가 관리하는 객체가 된다. -> Bean
 @SpringBootApplication // 설정파일이면서도 컨퍼넌트이기도 하다.
 public class DemoApplication implements CommandLineRunner { // 고로 DemoApplication 클래스 자체가 설정파일이다.
 
@@ -22,17 +24,32 @@ public class DemoApplication implements CommandLineRunner { // 고로 DemoApplic
 	}
 
 	// DataSource Bean(Spring이 관리하는 객체) -> 이것을 이용해야지 데이터베이스 커넥션을 얻어와서 프로그래밍을 할 수 있다.
-	@Autowired //DataSource Bean을 주입한다.
-	DataSource dataSource;
+//	@Autowired //DataSource Bean을 주입한다.
+//	DataSource dataSource;
 
 	// Spring이 Object로 참조할 수 있는 모든 Bean을 주입한다.
+//	@Autowired
+//	List<Object> beans;
+
+	// Bean으로 된다는건 주입 받을 수 있다.
 	@Autowired
-	List<Object> beans;
+	RoleDao roleDao;
 
 	// 스프링부트에서는 CommandLineRunner을 구현하고 있는 run이 프로그램 시작점이다.
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println("스프링 부트가 관리하는 빈을 사용할 수 있다.");
+//		Role role = new Role();
+//		role.setRoleId(3);
+//		role.setName("ROLE_TEST");
+//		roleDao.addRole(role);
+
+//		boolean flag = roleDao.deleteRole(1);
+//		System.out.println("flae : " + flag);
+
+		Role role = roleDao.getRole(1);
+		System.out.println(role.getRoleId() + ", " + role.getName());
+
+//		System.out.println("스프링 부트가 관리하는 빈을 사용할 수 있다.");
 //		for(Object obj: beans){
 //			System.out.println(obj.getClass().getName());
 //		}
@@ -40,18 +57,18 @@ public class DemoApplication implements CommandLineRunner { // 고로 DemoApplic
 //		System.out.println("--------------");
 //		Connection connection = dataSource.getConnection(); // db연결을 달라고 할 수 있다. dataSource를 통해 커넥션을 얻어온것.
 
-		List<Connection> list = new ArrayList<>();
+//		List<Connection> list = new ArrayList<>();
 
-		int i = 0;
-		while (true){
-			Connection conn = dataSource.getConnection();
-			list.add(conn);
-			System.out.println("Connection " + i + " : " + conn);
-			i++;
-			// conn을 이용하여 SQL을 실행. slow sql을 실행하게 되면... close가 느리게 된다.
-			conn.close(); // 이렇게 커넥션을 되돌려줘야 프로그램이 안멈춘다.
-			Thread.sleep(100); // 0.1초 쉰다.
-		}
+//		int i = 0;
+//		while (true){
+//			Connection conn = dataSource.getConnection();
+//			list.add(conn);
+//			System.out.println("Connection " + i + " : " + conn);
+//			i++;
+//			// conn을 이용하여 SQL을 실행. slow sql을 실행하게 되면... close가 느리게 된다.
+//			conn.close(); // 이렇게 커넥션을 되돌려줘야 프로그램이 안멈춘다.
+//			Thread.sleep(100); // 0.1초 쉰다.
+//		}
 
 //		// JDBC프로그래밍과 관련된 부분
 //		PreparedStatement ps = connection.prepareStatement("select role_id, name from role"); // select 문장을 실행할 준비를 한후 PreparedStatement를 받고
