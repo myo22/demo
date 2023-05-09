@@ -38,10 +38,10 @@ public class DemoApplication implements CommandLineRunner { // 고로 DemoApplic
 	// 스프링부트에서는 CommandLineRunner을 구현하고 있는 run이 프로그램 시작점이다.
 	@Override
 	public void run(String... args) throws Exception {
-//		Role role = new Role();
-//		role.setRoleId(3);
-//		role.setName("ROLE_TEST");
-//		roleDao.addRole(role);
+		Role role = new Role();
+		role.setRoleId(3);
+		role.setName("ROLE_TEST");
+		roleDao.addRole(role);
 
 //		boolean flag = roleDao.deleteRole(1);
 //		System.out.println("flae : " + flag);
@@ -51,10 +51,10 @@ public class DemoApplication implements CommandLineRunner { // 고로 DemoApplic
 //			System.out.println(role.getRoleId() + ", " + role.getName());
 //		}
 
-		List<Role> list = roleDao.getRoles();
-		for(Role role : list){
-			System.out.println(role.getRoleId() + ", " + role.getName());
-		}
+//		List<Role> list = roleDao.getRoles();
+//		for(Role role : list){
+//			System.out.println(role.getRoleId() + ", " + role.getName());
+//		}
 
 //		System.out.println("스프링 부트가 관리하는 빈을 사용할 수 있다.");
 //		for(Object obj: beans){
