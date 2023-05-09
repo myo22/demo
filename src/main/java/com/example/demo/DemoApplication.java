@@ -46,8 +46,15 @@ public class DemoApplication implements CommandLineRunner { // 고로 DemoApplic
 //		boolean flag = roleDao.deleteRole(1);
 //		System.out.println("flae : " + flag);
 
-		Role role = roleDao.getRole(1);
-		System.out.println(role.getRoleId() + ", " + role.getName());
+//		Role role = roleDao.getRole(1);
+//		if( role != null){
+//			System.out.println(role.getRoleId() + ", " + role.getName());
+//		}
+
+		List<Role> list = roleDao.getRoles();
+		for(Role role : list){
+			System.out.println(role.getRoleId() + ", " + role.getName());
+		}
 
 //		System.out.println("스프링 부트가 관리하는 빈을 사용할 수 있다.");
 //		for(Object obj: beans){

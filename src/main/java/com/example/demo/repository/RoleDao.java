@@ -2,9 +2,13 @@ package com.example.demo.repository;
 
 import com.example.demo.domain.Role;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 //  Spring JDBC를 이용해서 Database프로그래밍
 // @Repository는 @Component이다. -> 컨테이너가 관리해주는 Bean이다.
@@ -33,21 +37,66 @@ public class RoleDao {
     }
 
     public Role getRole(int roleId){
-        String sql = "SELECT role_id, name FROM role WHERE role_id = ?";
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+        String sql = "SELECT role_id, name FROM role WHERE role_id = ?"; // role_id는 PK이기 때문에 1건 or 0건의 데이터가 조회된다.(유일성)
+        // queryForObject는 1건 또는 0건을 읽어오는 메소드.(위에 셀렉트문처럼 결과가 있거나 없거나하는 셀렉트문을 실행하는것에 사용)
+        // queryForObject(String sql, RowMapper<T> rowMapper, @Nullable Object... args) @Nullable Object... args는 여러개의 원소가 세번째 인자로 올 수 있다.
+        try {
+            return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+                Role role = new Role();
+                role.setRoleId(rs.getInt("role_id"));
+                role.setName(rs.getString("name"));
+                return role;
+            }, roleId);
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    public List<Role> getRoles(){
+        String sql = "SELECT role_id, name FROM role ORDER BY role_id";
+        // query메소드는 여러건의 결과를 구할때 사용하는 메소드 queryForObject는 한건만 리턴해주는데 query는 list에 담아서 여러개 리턴해준다.
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
             Role role = new Role();
             role.setRoleId(rs.getInt("role_id"));
             role.setName(rs.getString("name"));
             return role;
-        }, roleId);
+        });
     }
 
-    /* 이 긴줄을 Spring JDBC를 이용하면 위처럼 간단하게 가능
-    String sql = "INSERT INTO role(role_id, name) VALUES(?, ?, ?)";
-    ps = conn.prepareStatement(sql);
-    ps.setInt(1, emp.getID());
-    ps.setString(2, emp.getName());
-    ps.setDouble(3, emp.getSal());
-    int updateCount = ps.executeUpdate();
+    // 아래 RoleRowMapper를 작성한후 이렇게 적용하면 위에 람다식이랑 똑같은 것이다.
+    // return jdbcTemplate.queryForObject(sql, RoleRowMapper(),roleId);
+
+    // 위에 RowMapper는 인터페이스 함수라서 람다식으로 표현가능한데 위에처럼 람다로 표현 안한다면 아래와 같다.
+    // RowMapper는 메소드를 하나 가지고있다.
+    // 데이터를 한건 읽어오는 것을 성공한 것을 가정하고. 한건의 데이터를 Role객체에 담아서 리턴하도록 코딩한것.
+    // 이 클래스가 다른 클래스에서 전혀 재사용하는 일이 없다면, 클래스를 만들 필요까지 있을까?
+    class RoleRowMapper implements RowMapper<Role> {
+        @Override
+        public Role mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Role role = new Role();
+            role.setRoleId(rs.getInt("role_id"));
+            role.setName(rs.getString("name"));
+            return role;
+        }
+    }
+
+    /* 이 긴줄을 Spring JDBC를 이용하면 위 Select처럼 간단하게 가능
+    List<Role> list = new ArrayList<Role>();
+    아래는 sql을 준비 (바인딩)
+    String sql = "SELECT role_id FROM role WHERE role_id = ?"; ?빼고 sql문 작성
+    ps = conn.prepareStatement(sql); sql문 준비
+    ps.setDouble(1, roleId); 물음표에 해당하는 값을 채우는것.
+    sql을 실행
+    int updateCount = ps.executeQuery();
+    sql의 결과를 한건 읽어온다.
+    while(rs.next()){ //role_id, name --> rs
+        // 칼럼별로 쪼개서 DTO에 담는다.
+        Role role = new Role();
+        role.setRoleId(rs.getInt("role_id"));
+        role.setName(rs.getString("name));
+        list.add(role);
+    }
+    return list;
      */
+
 }
