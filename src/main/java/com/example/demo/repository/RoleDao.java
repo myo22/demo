@@ -106,7 +106,7 @@ public class RoleDao {
     // 아래 RoleRowMapper를 작성한후 이렇게 적용하면 위에 람다식이랑 똑같은 것이다.
     // return jdbcTemplate.queryForObject(sql, RoleRowMapper(),roleId);
 
-    // 위에 RowMapper는 인터페이스 함수라서 람다식으로 표현가능한데 위에처럼 람다로 표현 안한다면 아래와 같다.
+    // 위에 RowMapper는 인터페이스 함수(FunctionalInterface)라서 람다식으로 표현가능한데 위에처럼 람다로 표현 안한다면 아래와 같다.
     // RowMapper는 메소드를 하나 가지고있다.
     // 데이터를 한건 읽어오는 것을 성공한 것을 가정하고. 한건의 데이터를 Role객체에 담아서 리턴하도록 코딩한것.
     // 이 클래스가 다른 클래스에서 전혀 재사용하는 일이 없다면, 클래스를 만들 필요까지 있을까?
