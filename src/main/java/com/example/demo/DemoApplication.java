@@ -1,7 +1,9 @@
 package com.example.demo; // 실행할때 DemoApplication이 속해있는 패키지 이하로만 찾는다
 
 import com.example.demo.domain.Role;
+import com.example.demo.domain.User;
 import com.example.demo.repository.RoleDao;
+import com.example.demo.repository.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -35,13 +37,22 @@ public class DemoApplication implements CommandLineRunner { // 고로 DemoApplic
 	@Autowired
 	RoleDao roleDao;
 
+	@Autowired
+	UserDao userDao;
+
 	// 스프링부트에서는 CommandLineRunner을 구현하고 있는 run이 프로그램 시작점이다.
 	@Override
 	public void run(String... args) throws Exception {
-		Role role = new Role();
-		role.setRoleId(3);
-		role.setName("ROLE_TEST");
-		roleDao.addRole(role);
+//		Role role = new Role();
+//		role.setRoleId(3);
+//		role.setName("ROLE_TEST");
+//		roleDao.addRole(role);
+
+		User user = new User();
+		user.setEmail("dlalsgud12");
+		user.setPassword("1234");
+		user.setName("dlalsgud");
+		userDao.userInsert(user);
 
 //		boolean flag = roleDao.deleteRole(1);
 //		System.out.println("flae : " + flag);
