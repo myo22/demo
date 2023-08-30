@@ -3,6 +3,7 @@ package com.example.demo.repository;
 import com.example.demo.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -18,47 +19,40 @@ import java.util.List;
 
 @Repository
 public class UserDao {
-    private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsertOperations simpleJdbcInsert;
 
+    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsertOperations insert;
 
     public UserDao(DataSource dataSource) {
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        simpleJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("User");
+        insert = new SimpleJdbcInsert(dataSource)
+                .withTableName("user");
     }
 
-    public boolean userInsert(User user){
-//        String sql = "insert into user(email, name, password) values(:email, :name, :password)";
-        SqlParameterSource parmas = new BeanPropertySqlParameterSource(user);
-        int result =  simpleJdbcInsert.execute(parmas);
+    public boolean insertUser(User user) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(user);
+        int result = insert.execute(params);
         return result == 1;
     }
 
-    public boolean userUpdate(int user_id){
-        String sql = "update user set email = :email, name = :name, password = :password where user_id=:userId";
-        SqlParameterSource params = new MapSqlParameterSource("userId", user_id);
+    public boolean deleteUser(int userId){
+        String sql = "delete from user where user_id = :userId";
+        SqlParameterSource params = new MapSqlParameterSource("user_id", userId);
+        int result = jdbcTemplate.update(sql, params);
+        return  result == 1;
+    }
+
+    public boolean updateUser(String email, String name, String password, int userId){
+        String sql = "update user set email = :email, name = :name, password = :password where user_id= :userId";
+//        SqlParameterSource params = new MapSqlParameterSource().addValue("email", email).addValue("name", name).addValue("password", password);
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setUserId(userId);
+        SqlParameterSource params = new BeanPropertySqlParameterSource(user);
         int result = jdbcTemplate.update(sql, params);
         return result == 1;
-    }
-
-    public boolean userDelete(int user_id){
-        String sql = "delete from user where user_id = :userId ";
-        SqlParameterSource params = new MapSqlParameterSource("userId", user_id);
-        int result =  jdbcTemplate.update(sql, params);
-        return result == 1;
-    }
-
-    public List<User> userSelects(){
-        String sql = "select * from user";
-        RowMapper<User> rowMapper = BeanPropertyRowMapper.newInstance(User.class);
-        return jdbcTemplate.query(sql, rowMapper);
-    }
-
-    public User userSelect(int user_id){
-        String sql = "select * from user where user_id = :userId ";
-        SqlParameterSource params = new MapSqlParameterSource("userId", user_id);
-        RowMapper<User> rowMapper = BeanPropertyRowMapper.newInstance(User.class);
-        return jdbcTemplate.queryForObject(sql, params, rowMapper);
     }
 
 

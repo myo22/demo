@@ -48,11 +48,11 @@ public class DemoApplication implements CommandLineRunner { // 고로 DemoApplic
 //		role.setName("ROLE_TEST");
 //		roleDao.addRole(role);
 
-		User user = new User();
-		user.setEmail("dlalsgud12");
-		user.setPassword("1234");
-		user.setName("dlalsgud");
-		userDao.userInsert(user);
+//		User user = new User();
+//		user.setEmail("dlalsgud12");
+//		user.setPassword("1234");
+//		user.setName("dlalsgud");
+		userDao.updateUser("rlaalsgud@naver.com", "rlaalsgud", "1423", 1);
 
 //		boolean flag = roleDao.deleteRole(1);
 //		System.out.println("flae : " + flag);
